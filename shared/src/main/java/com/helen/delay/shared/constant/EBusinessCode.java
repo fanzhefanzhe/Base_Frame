@@ -158,7 +158,6 @@ public enum EBusinessCode {
             var seriesCode = Long.valueOf(businessCode / 1000);
             return Stream.of(values()).filter(v -> seriesCode == v.toValue()).findFirst().orElseThrow();
         }
-
     }
 
 }
