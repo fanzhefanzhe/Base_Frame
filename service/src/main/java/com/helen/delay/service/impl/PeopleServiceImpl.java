@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author: 樊喆
@@ -50,7 +51,7 @@ public class PeopleServiceImpl extends ServiceImpl<PeopleMapper, People> impleme
         //开启分页,如果实体发生变化，分页可能会失效，使用上面方案。如果没有变化可以使用此方案
         PageMethod.startPage(peopleReq.getPageNumber(),peopleReq.getPageSize());
         List<PeopleListVo> peopleListVos = peopleMapper.findList3(peopleReq)
-                .stream().map(People::toPeopleVo).toList();
+                .stream().map(People::toPeopleVo).collect(Collectors.toList());
         return new PageInfo<>(peopleListVos);
     }
 

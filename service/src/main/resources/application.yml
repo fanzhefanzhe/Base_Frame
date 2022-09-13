@@ -9,7 +9,7 @@ spring:
     password: cheche
   redis:
     host: localhost
-    password: cheche
+#    password: cheche
     port: 6379
     timeout: 5000
 

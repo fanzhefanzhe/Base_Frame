@@ -1,146 +1,71 @@
 package com.helen.delay.service.model.response;
 
-
-import com.helen.delay.shared.constant.EBusinessCode;
-import com.helen.delay.shared.domain.base.PageResult;
 import com.github.pagehelper.PageInfo;
-import com.helen.delay.shared.validation.BusinessSeries;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Map;
-
-import static com.helen.delay.shared.constant.EBusinessCode.ESeries._SUCCESS_SERIES;
-import static com.helen.delay.shared.constant.EBusinessCode._SUCCESS;
-
+import com.helen.delay.service.model.People;
+import com.helen.delay.shared.domain.base.PageResult;
+import com.helen.delay.shared.domain.vo.PeopleListVo;
+import com.helen.delay.shared.enums.ResultCodeEnum;
+import lombok.Data;
 
 /**
- * DTO实用工具
- *
- * @author 张华彬
- * @since 1.0.0
+ * @Author: 樊喆
  */
-public class Result {
+@Data
+public class Result<T> {
 
+    Integer code;
 
-    // <editor-fold defaultstate="collapsed" desc="DResponse方便方法">
+    T data;
 
-    /**
-     * 生成成功响应
-     * @return 响应
-     */
-    public static DResponse<?> success() {
-        return success(_SUCCESS, null, _SUCCESS.getDescription(), null);
+    String message;
+
+    public Result(){}
+
+    public static <T> Result<T> build(T body, Integer code, String message) {
+        Result<T> result = new Result<T>();
+        if (body != null) {
+            result.setData(body);
+        }
+        result.setCode(code);
+        result.setMessage(message);
+        return result;
     }
 
     /**
-     * 生成成功响应
-     *
-     * @param message 提示信息
-     * @return 响应
+     * 操作成功
+     * @param data  baseCategory1List
+     * @param <T>
+     * @return
      */
-    public static DResponse<?> success(String message) {
-        return success(_SUCCESS, null, message, null);
+    public static<T> Result<T> ok(T data){
+        return build(data, ResultCodeEnum.SUCCESS.getCode(),"成功");
+    }
+
+    public static<T> Result<T> ok(){
+        return Result.ok(null);
     }
 
     /**
-     * 生成成功响应
-     *
-     * @param payload 负载
-     * @param message 提示信息
-     * @return 响应
+     * 操作失败
+     * @param data
+     * @param <T>
+     * @return
      */
-    public static <R> DResponse<R> success(R payload, String message) {
-        return success(_SUCCESS, payload, message, null);
+    public static<T> Result<T> fail(T data){
+        return build(data, ResultCodeEnum.FAIL.getCode(), "失败");
     }
 
-    /**
-     * 生成成功响应
-     *
-     * @param payload 负载
-     * @return 响应
-     */
-    public static <R> DResponse<R> success(R payload) {
-        return success(_SUCCESS, payload, _SUCCESS.getDescription(), null);
+    public static<T> Result<T> fail(){
+        return Result.fail(null);
     }
 
-    /**
-     * 生成成功响应
-     *
-     * @param businessCode 业务码
-     * @param message      提示信息
-     * @return 响应
-     */
-    public static DResponse<?> success(EBusinessCode businessCode, String message) {
-        return success(businessCode, null, message, null);
+    public Result<T> message(String msg){
+        this.setMessage(msg);
+        return this;
     }
 
-    /**
-     * 生成成功响应
-     *
-     * @param businessCode 业务码
-     * @param payload      负载
-     * @param message      提示信息
-     * @param metadata     元数据
-     * @return 响应
-     */
-    public static <R> DResponse<R> success(
-        @BusinessSeries(_SUCCESS_SERIES) EBusinessCode businessCode,
-        R payload,
-        String message,
-        Map<String, ?> metadata
-    ) {
-        return new DResponse<>(businessCode.getId(), payload, message, metadata);
+    public Result<T> code(Integer code){
+        this.setCode(code);
+        return this;
     }
-
-    /**
-     * 生成错误响应
-     *
-     * @param businessCode 业务码
-     * @return 响应
-     */
-    public static DResponse error(EBusinessCode businessCode) {
-        return error(businessCode, null, businessCode.getDescription(), null);
-    }
-
-    /**
-     * 生成错误响应
-     *
-     * @param businessCode 业务码
-     * @param message      提示信息
-     * @return 响应
-     */
-    public static DResponse<?> error(EBusinessCode businessCode, String message) {
-        return error(businessCode, null, StringUtils.isNotBlank(message) ? message : businessCode.getDescription(), null);
-    }
-
-    /**
-     * 生成错误响应
-     *
-     * @param businessCode 业务码
-     * @param payload      负载
-     * @param message      提示信息
-     * @param metadata     元数据
-     * @return 响应
-     */
-    public static <R> DResponse<R> error(
-        @BusinessSeries(excludes = _SUCCESS_SERIES) EBusinessCode businessCode,
-        R payload,
-        String message,
-        Map<String, ?> metadata
-    ) {
-        return new DResponse<>(businessCode.getId(), payload, message, metadata);
-    }
-
-    /**
-     * 分页结果转换
-     * @param list 分页数据
-     * @param <T>   泛型
-     * @return  分页结果
-     */
-    public static <T> DResponse<PageResult<T>> success(PageInfo<T> list) {
-        return new DResponse<>(_SUCCESS.getId(), PageResult.restPage(list), _SUCCESS.getDescription(), null);
-    }
-
-    // </editor-fold>
-
 }
